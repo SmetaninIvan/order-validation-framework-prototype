@@ -1,24 +1,196 @@
-# Order Integration Testing Framework
+# 🧪 Order Processing Test Framework
 
-## Stack
-- Python 3.10
-- Pytest
-- Selenium (UI)
-- PostgreSQL (DB validation)
-- CORBA (stub via omniORB concept)
-- Allure reports
+## 📌 Описание
 
----
+Прототип мини-фреймворка для автоматизации интеграционного сценария обработки заказов.
 
-## Architecture
-- Page Object Model (UI layer)
-- Service layer (business logic)
-- Core layer (DB + CORBA clients)
+Покрывает следующий бизнес-флоу:
+
+1. Создание заказа через UI
+2. Проверка сохранения заказа в БД (статус `New`)
+3. Инициация обработки заказа через CORBA
+4. Проверка смены статуса на `Ready`
 
 ---
 
-## Running tests
+## 🏗 Архитектура
+
+Проект построен с разделением на слои:
+
+```
+pages/      → Page Object Model (UI слой)
+services/   → Работа с внешними системами (DB, CORBA)
+tests/      → Тесты
+config/     → Конфигурация
+```
+
+### Используемые подходы:
+
+* Page Object Model (POM)
+* Dependency Injection через pytest fixtures
+* Абстракции для внешних сервисов
+* Mocking внешних зависимостей
+
+---
+
+## ⚙️ Технологии
+
+* Python 3.10+
+* Pytest
+* Selenium (UI слой)
+* Allure (отчеты)
+* PostgreSQL (абстракция)
+* CORBA (абстракция)
+
+---
+
+## 🚀 Запуск проекта
+
+### 1. Установить зависимости
 
 ```bash
 pip install -r requirements.txt
-pytest --alluredir=allure-results
+```
+
+### 2. Запустить тесты
+
+```bash
+pytest
+```
+
+### 3. Посмотреть Allure отчет
+
+```bash
+allure serve allure-results
+```
+
+---
+
+## 🧪 Описание тестового сценария
+
+Тест `test_order_flow` выполняет:
+
+* создание заказа
+* проверку статуса в БД (`New`)
+* вызов обработки через CORBA
+* проверку смены статуса (`Ready`)
+
+---
+
+## 🗄 Работа с базой данных
+
+В рамках тестового задания используется:
+
+👉 `MockDBClient`
+
+Причины:
+
+* отсутствие реального окружения
+* изоляция тестов
+* воспроизводимость
+
+### Поведение:
+
+* при создании заказа → статус `New`
+* после обработки → статус `Ready`
+
+В реальной системе использовался бы `psycopg2` и PostgreSQL.
+
+---
+
+## 🔌 CORBA интеграция
+
+CORBA реализована через абстракцию:
+
+```python
+class OrderProcessor(ABC):
+    def prepare_order(self, order_id: str):
+        pass
+```
+
+Используется mock-реализация:
+
+```python
+class MockCorbaOrderProcessor(OrderProcessor):
+```
+
+### Поведение:
+
+* имитация удаленного вызова
+* изменение статуса заказа
+
+---
+
+### 📌 Пример реального подключения (описательно)
+
+```python
+import omniORB
+
+orb = omniORB.CORBA.ORB_init()
+```
+
+В реальной системе использовались бы:
+
+* IDL-контракты
+* Naming Service
+* удаленные объекты
+
+---
+
+## 📊 Allure отчеты
+
+Реализовано:
+
+* шаги теста (`allure.step`)
+* автоматические скриншоты при падении UI теста
+
+---
+
+## 🤖 CI/CD
+
+Используется GitHub Actions.
+
+Pipeline включает:
+
+* установку зависимостей
+* запуск тестов
+* сохранение Allure результатов
+
+Файл:
+
+```
+.github/workflows/tests.yml
+```
+
+---
+
+## 📁 Структура проекта
+
+```
+project/
+├── pages/
+├── services/
+├── tests/
+├── config/
+├── conftest.py
+├── pytest.ini
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## 💡 Дополнительно
+
+В проекте продемонстрированы:
+
+* работа с интеграционными сценариями
+* изоляция внешних зависимостей
+* тестируемая архитектура
+* готовность к масштабированию
+
+---
+
+## 👤 Автор
+
+Тестовое задание выполнено в рамках демонстрации навыков автоматизации тестирования и проектирования тестовых фреймворков.
