@@ -1,0 +1,36 @@
+import pytest
+import allure
+from selenium import webdriver
+from services.db_client import MockDBClient
+from services.corba_client import MockCorbaOrderProcessor
+
+@pytest.fixture
+def driver():
+    return None
+
+@pytest.fixture
+def db():
+    return MockDBClient()
+
+@pytest.fixture
+def order_processor(db):
+    return MockCorbaOrderProcessor(db)
+
+@pytest.fixture
+def order_processor(db):
+    return MockCorbaOrderProcessor(db)
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    rep = outcome.get_result()
+
+    if rep.failed:
+        driver = item.funcargs.get("driver")
+        if driver:
+            allure.attach(
+                driver.get_screenshot_as_png(),
+                name="screenshot",
+                attachment_type=allure.attachment_type.PNG
+            )
