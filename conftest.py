@@ -24,7 +24,7 @@ def pytest_runtest_makereport(item):
     outcome = yield
     rep = outcome.get_result()
 
-    if rep.failed:
+   if rep.when == "call" and rep.failed:
         driver = item.funcargs.get("driver")
         if driver:
             allure.attach(
