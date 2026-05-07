@@ -1,5 +1,6 @@
 import pytest
 import allure
+import rep
 from selenium import webdriver
 from services.db_client import MockDBClient
 from services.corba_client import MockCorbaOrderProcessor
@@ -24,7 +25,7 @@ def pytest_runtest_makereport(item):
     outcome = yield
     rep = outcome.get_result()
 
-   if rep.when == "call" and rep.failed:
+    if rep.when == "call" and rep.failed:
         driver = item.funcargs.get("driver")
         if driver:
             allure.attach(
