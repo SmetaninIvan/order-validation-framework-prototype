@@ -16,10 +16,6 @@ def db():
 def order_processor(db):
     return MockCorbaOrderProcessor(db)
 
-@pytest.fixture
-def order_processor(db):
-    return MockCorbaOrderProcessor(db)
-
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item):
