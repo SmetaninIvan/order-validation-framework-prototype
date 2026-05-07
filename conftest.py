@@ -6,7 +6,9 @@ from services.corba_client import MockCorbaOrderProcessor
 
 @pytest.fixture
 def driver():
-    return None
+    driver = webdriver.Chrome()
+    yield = driver
+    driver.quit()
 
 @pytest.fixture
 def db():
